@@ -119,6 +119,7 @@ int main() {
 					output << at << std::endl;
 					i++;
 				}
+				unique_atoms.clear();
 			}
 		}
 		else {
