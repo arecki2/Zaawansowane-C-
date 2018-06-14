@@ -1,51 +1,54 @@
 #include <iostream>
 #include <random>
-#include "helloer.h"
+#include <chrono>
+#include <ctime>
+#include <array>
 
-int main(){
-	const int N = 100; // liczba elementów do porównania
-	std::random_device rd{};
-	std::uniform_int_distribution<> choice(0,2);
+template <typename T, size_t dim>
+class RandomNumberGenerator {
+private:
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> dis(0.0, 1.0);
+    std::array<T,dim> lowerLimits;
+	std::array<T,dim> upperLimits;
+    
+public:
+    RandomNumberGenerator(const std::array<T,dim>& lower_bonds, const std::array<T,dim>& upper_bonds)
+        : lowerLimits(lower_bonds), upperLimits(upper_bonds) {}
+    
+    T randomRange(size_t wymiar) {
+        std::uniform_real_distribution<> disT(lowerLimits[wymiar], upperLimits[wymiar]);
+        return disT(gen);
+    }
+    
+    T stepForward(T& niepodatnosc, size_t wymiar, const T& polozenie) {
+        auto upper = (upperLimits[wymiar]-polozenie)/niepodatnosc;
+        auto lower = (polozenie-lowerLimits[wymiar])/niepodatnosc;
+        std::uniform_real_distribution<> disP(lower, upper);
+        return disP(gen);
+    }
+    
+    T choice() {
+        return dis(gen);
+    }
+};
 
-	     Helloer<double> A;
-	Rude_Helloer<double> B;
-	Mean_Helloer<double> C;
+template <typename T, size_t dim)
+class Termalizer {
+public:
+    T operator()(T& niepodatnosc, size_t numerKroku, size_t liczbaKrokow, size_t liczba_wymiarow) {
+        
+    }
+};
 
-	Helloer<double>* ptrI;
-	Helloer<double>* ptrJ;
-
-	for(int i=N; i>0; --i){
-		switch(choice(rd)){
-			case 0:
-				ptrI = new Helloer<double>;
-				break;
-			case 1:
-				ptrI = new Rude_Helloer<double>;
-				break;
-			case 2:
-				ptrI = new Mean_Helloer<double>;
-				break;
-			default:
-				ptrI = nullptr;
-		}
-	
-	  for(int j=N; j>0; --j){
-		switch(choice(rd)){
-			case 0:
-				ptrJ = new Helloer<double>;
-				break;
-			case 1:
-				ptrJ = new Rude_Helloer<double>;
-				break;
-			case 2:
-				ptrJ = new Mean_Helloer<double>;
-				break;
-			default:
-				ptrJ = nullptr;
-		}
-	   std::cout<<std::boolalpha<<"ptrI*ptrJ = "<<(*ptrI)*(*ptrJ)<<std::endl;
-	  }
-	}
-
-	return 0;
+int main() {
+    auto start = std::chrono::system_clock::now();
+    doSomething();
+    auto stop = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed_seconds = end-start;
+    std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+ 
+    std::cout << "finished computation at " << std::ctime(&end_time)
+              << "elapsed time: " << elapsed_seconds.count() << "s\n";
 }
